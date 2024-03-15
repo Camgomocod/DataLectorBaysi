@@ -6,12 +6,13 @@ from Connector import Connect
 class Pdf:
 
     def __init__(self) -> None:
-        self.path = "C:\\Users\\JOHANN\\Chancar\\Projects\\DataLector\\"
+        self.path = "D:\\General Files\\Documents\\Baysi\\Guias\\"
+        # D:\General Files\Documents\Baysi\Guias
         self.patrones = [' - Unidad', ' - g', ' - mL', ' - Kg', ' - L']
         self.cn = Connect()
     
     # Detector de patrones derecha
-    def get_next_to_upper(self, text, pattern):
+    def get_next_to_upper(self, text, pattern): 
         match = re.search(pattern, text)
         if match:
             return  match.group(2) + match.group(3)  # Devuelve el tercer grupo completo
@@ -32,7 +33,7 @@ class Pdf:
         if match:
             return match.group(1) + match.group(2)
         return None
-    
+        
     # Iterador pdfs carpeta
     def lectorPdfs(self):
         os.chdir(f'{self.path}\\upload')
@@ -50,6 +51,7 @@ class Pdf:
         if nombre_comprador == None:
             linea = lineas[5]
             nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
+
         return nombre_comprador
     
     # Obtener el nombre del producto

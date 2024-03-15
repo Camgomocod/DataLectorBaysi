@@ -7,8 +7,8 @@ class Connect:
             connection = psycopg2.connect(
                 host = 'localhost',
                 user = 'postgres',
-                password = 'oracle',
-                database = 'Mercado libre'
+                password = 'database',
+                database = 'BaysiDataBase'
             )
             
         except Exception as ex:
@@ -32,11 +32,11 @@ class Connect:
                 return
             else:
                 cursor.execute(
-                f"INSERT INTO cliente (id_telefono, nombre, departamento, ciudad, direccion) VALUES ({id_telefono}, '{nombre}', '{departamento}', '{ciudad}', '{direccion}');"
+                    f"INSERT INTO cliente (id_telefono, nombre, ciudad, departamento, direccion) VALUES ({id_telefono}, '{nombre}', '{ciudad}', '{departamento}', '{direccion}');"
                 )
                 
                 cursor.execute(
-                f"INSERT INTO venta (telefono, nombre_producto, cantidad_producto, fecha) VALUES ({id_telefono}, '{nombre_producto}', '{cantidad_producto}', '{fecha}')"
+                    f"INSERT INTO venta (telefono, nombre_producto, cantidad_producto, fecha) VALUES ({id_telefono}, '{nombre_producto}', '{cantidad_producto}', '{fecha}')"
                 )
                 
                 connection.commit()
@@ -52,8 +52,8 @@ class Connect:
             connection = psycopg2.connect(
                 host = 'localhost',
                 user = 'postgres',
-                password = 'oracle',
-                database = 'Mercado libre'
+                password = 'database',
+                database = 'BaysiDataBase'
             )
         except Exception as ex:
             print(ex)
