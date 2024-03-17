@@ -46,17 +46,31 @@ class Pdf:
         
     # Obtener el nombre del comprador
     def get_nombre_comprador(self, lineas):
-        linea = lineas[4]
-        nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
-        if nombre_comprador == None:
-            linea = lineas[5]
-            nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
+
+        try:
+            linea = lineas[4]
+            nombre_comprador = linea
+            if nombre_comprador:
+                if self.get_next_to_upper(linea, r"(.*?)\s([A-Z])([A-Z].*)$"):
+                    nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([A-Z])([A-Z].*)$")
+                else:
+                    nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
+            
+            if nombre_comprador == None:
+                linea = lineas[5]
+                if self.get_next_to_upper(linea, r"(.*?)\s([A-Z])([A-Z].*)$"):
+                    nombre_comprador = self.get_next_to_upper(linea, r"(.*?)([A-Z])([A-Z].*)$")
+                else:
+                    nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
+        except Exception as ex:
+            print(ex)
 
         return nombre_comprador
     
     # Obtener el nombre del producto
     def get_nombre_productos(self, lineas):
         nombre_productoF = None
+        
         try:
             linea = lineas[4]
             nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
@@ -74,7 +88,6 @@ class Pdf:
             print(ex)
         
         return nombre_productoF
-
     # Si hay mas de dos productos en la guia, registro
     def get_nombre_producto_otros(self, lineas, id_telefono, cantidad_producto, fecha):
         linea = lineas[4]
