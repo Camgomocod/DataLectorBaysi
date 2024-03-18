@@ -80,19 +80,15 @@ class Pdf:
                     nombre_producto = self.get_next_to_upper(linea, r"([A-Z])([A-Z].*)(.*?)$")
                 else:
                     nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
-
-                nombre_producto = nombre_producto.replace("'", "")
-                nombre_productoF = self.eliminar_patron(nombre_producto)   
-                
+                 
             if nombre_producto:
                 if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
                     nombre_producto = self.get_next_to_upper(linea, r"([A-Z])([A-Z].*)(.*?)$")
                 else:
                     nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
-
-                nombre_producto = nombre_producto.replace("'", "")
-                nombre_productoF = self.eliminar_patron(nombre_producto)
-            
+                
+            nombre_producto = nombre_producto.replace("'", "")
+            nombre_productoF = self.eliminar_patron(nombre_producto)
         except Exception as ex:
             print(ex)
         
