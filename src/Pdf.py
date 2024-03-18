@@ -50,9 +50,12 @@ class Pdf:
         try:
             linea = lineas[4]
             nombre_comprador = linea
+            
             if nombre_comprador:
                 if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
                     nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([A-Z])([A-Z].*)$")
+                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
+                    nombre_comprador= self.get_previous_to_upper(linea, r"(.*?)([a-z])([ÁÉÍÓÚ].*)$")
                 else:
                     nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
             
@@ -60,6 +63,8 @@ class Pdf:
                 linea = lineas[5]
                 if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
                     nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([A-Z])([A-Z].*)$")
+                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
+                    nombre_comprador= self.get_previous_to_upper(linea, r"(.*?)([a-z])([ÁÉÍÓÚ].*)$")
                 else:
                     nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
         except Exception as ex:
@@ -73,22 +78,33 @@ class Pdf:
         
         try:
             linea = lineas[4]
-            nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")            
+            nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")   
+                
             if nombre_producto == None:
                 linea = lineas[5]
                 if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
                     nombre_producto = self.get_next_to_upper(linea, r"([A-Z])([A-Z].*)(.*?)$")
+                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
+                    nombre_producto= self.get_next_to_upper(linea, r"([a-z])([ÁÉÍÓÚ].*)(.*?)$")
+                elif re.search(r"([.])", linea):
+                    nombre_producto = nombre_producto.replace(".", "")
                 else:
                     nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
+                
                  
             if nombre_producto:
                 if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
                     nombre_producto = self.get_next_to_upper(linea, r"([A-Z])([A-Z].*)(.*?)$")
+                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
+                    nombre_producto= self.get_next_to_upper(linea, r"([a-z])([ÁÉÍÓÚ].*)(.*?)$")
+                elif re.search(r"([.])", linea):
+                    nombre_producto = nombre_producto.replace(".", "")
                 else:
                     nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
                 
             nombre_producto = nombre_producto.replace("'", "")
             nombre_productoF = self.eliminar_patron(nombre_producto)
+        
         except Exception as ex:
             print(ex)
         
