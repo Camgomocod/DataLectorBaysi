@@ -44,98 +44,90 @@ class Pdf:
         for archivo_pdf in archivos_pdf:
             self.read_pdf(archivo_pdf)
         
+    # Procesar el nombre del comprador 
+    def procesar_nombre_comprador(self, linea):
+        linea = linea.replace(".", "")
+        if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
+            nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([A-Z])([A-Z].*)$")
+        elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
+            nombre_comprador= self.get_previous_to_upper(linea, r"(.*?)([a-z])([ÁÉÍÓÚ].*)$")
+        else:
+            nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
+        
+        return nombre_comprador
+    
     # Obtener el nombre del comprador
     def get_nombre_comprador(self, lineas):
-
         try:
             linea = lineas[4]
             nombre_comprador = linea
-            
             if nombre_comprador:
-                if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
-                    nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([A-Z])([A-Z].*)$")
-                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
-                    nombre_comprador= self.get_previous_to_upper(linea, r"(.*?)([a-z])([ÁÉÍÓÚ].*)$")
-                else:
-                    nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
-            
+                nombre_comprador = self.procesar_nombre_comprador(linea)
             if nombre_comprador == None:
                 linea = lineas[5]
-                if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
-                    nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([A-Z])([A-Z].*)$")
-                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
-                    nombre_comprador= self.get_previous_to_upper(linea, r"(.*?)([a-z])([ÁÉÍÓÚ].*)$")
-                else:
-                    nombre_comprador = self.get_previous_to_upper(linea, r"(.*?)([a-z])([A-Z])")
+                nombre_comprador = self.procesar_nombre_comprador(linea)
+
         except Exception as ex:
             print(ex)
 
         return nombre_comprador
+    #Procesar el nombre del producto
+    def procesar_nombre_producto(self, linea):
+        linea = linea.replace(".", "")
+
+        if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
+            nombre_producto = self.get_next_to_upper(linea, r"([A-Z])([A-Z].*)(.*?)$")
+        elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
+            nombre_producto= self.get_next_to_upper(linea, r"([a-z])([ÁÉÍÓÚ].*)(.*?)$")
+        else:
+            nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
+        
+        return nombre_producto
     
     # Obtener el nombre del producto
     def get_nombre_productos(self, lineas):
-        nombre_productoF = None
-        
         try:
             linea = lineas[4]
             nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")   
+
+            if nombre_producto:
+                nombre_producto = self.procesar_nombre_producto(linea)
                 
             if nombre_producto == None:
                 linea = lineas[5]
-                if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
-                    nombre_producto = self.get_next_to_upper(linea, r"([A-Z])([A-Z].*)(.*?)$")
-                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
-                    nombre_producto= self.get_next_to_upper(linea, r"([a-z])([ÁÉÍÓÚ].*)(.*?)$")
-                elif re.search(r"([.])", linea):
-                    nombre_producto = nombre_producto.replace(".", "")
-                else:
-                    nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
-                
-                 
-            if nombre_producto:
-                if re.search(r"(.*?)\s([A-Z])([A-Z].*)$", linea):
-                    nombre_producto = self.get_next_to_upper(linea, r"([A-Z])([A-Z].*)(.*?)$")
-                elif re.search(r"(.*?)([a-z])([ÁÉÍÓÚ].*)$", linea):
-                    nombre_producto= self.get_next_to_upper(linea, r"([a-z])([ÁÉÍÓÚ].*)(.*?)$")
-                elif re.search(r"([.])", linea):
-                    nombre_producto = nombre_producto.replace(".", "")
-                else:
-                    nombre_producto = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
-                
+                nombre_producto = self.procesar_nombre_producto(linea)
+
             nombre_producto = nombre_producto.replace("'", "")
-            nombre_productoF = self.eliminar_patron(nombre_producto)
-        
+            nombre_producto = self.eliminar_patron(nombre_producto)
+                
         except Exception as ex:
+            print(nombre_producto)
             print(ex)
         
-        return nombre_productoF
+        return nombre_producto
+    # Obtener el resto de productos, cuando en una guia hay mas de una venta
+    def procesar_productos(self, size, lineas, id_telefono, cantidad_producto, fecha):
+        for i in range(size, len(lineas)):
+            cantidad = re.findall('Cantidad: (.*)',lineas[i])
+            if cantidad != []:
+                nombre_producto = lineas[i-1]
+                nombre_producto = nombre_producto.replace("'", "")
+                nombre_productoF = self.eliminar_patron(nombre_producto)                    
+                self.cn.insert_data_venta(id_telefono, nombre_productoF, cantidad_producto, fecha)
+
     # Si hay mas de dos productos en la guia, registro
     def get_nombre_producto_otros(self, lineas, id_telefono, cantidad_producto, fecha):
         linea = lineas[4]
         nombre_productoX = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
-        
         # Agregar productos cuando hay en la guia mas de dos ventas
         if nombre_productoX:
-            for i in range(7, len(lineas)):
-                cantidad = re.findall('Cantidad: (.*)',lineas[i])
-                if cantidad != []:
-                    nombre_producto = lineas[i-1]
-                    nombre_producto = nombre_producto.replace("'", "")
-                    nombre_productoF = self.eliminar_patron(nombre_producto)                    
-                    self.cn.insert_data_venta(id_telefono, nombre_productoF, cantidad_producto, fecha)
-        
+            self.procesar_productos(7, lineas, id_telefono, cantidad_producto, fecha)
         # Agregar productos cuando hay en la guia mas de dos ventas
         if nombre_productoX == None:
             linea = lineas[5]
             nombre_productoX = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
             if nombre_productoX:
-                for i in range(8, len(lineas)):
-                    cantidad = re.findall('Cantidad: (.*)',lineas[i])
-                    if cantidad != []:
-                        nombre_producto = lineas[i-1]
-                        nombre_producto = nombre_producto.replace("'", "")
-                        nombre_productoF = self.eliminar_patron(nombre_producto)
-                        self.cn.insert_data_venta(id_telefono, nombre_productoF, cantidad_producto, fecha)
+                self.procesar_productos(8, lineas, id_telefono, cantidad_producto, fecha)
     
     # Obtener la fecha de compra
     def get_fecha(self, text):
