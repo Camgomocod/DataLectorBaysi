@@ -23,7 +23,6 @@ class Connect:
             cliente = cursor.fetchone()
             
             if cliente: 
-                print(f"cliente ya registrado '{id_telefono}'")
                 cursor.execute(
                     f"INSERT INTO venta (telefono, nombre_producto, cantidad_producto, fecha) VALUES ({id_telefono}, '{nombre_producto}', '{cantidad_producto}', '{fecha}')"
                 )

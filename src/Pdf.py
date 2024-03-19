@@ -101,7 +101,6 @@ class Pdf:
             nombre_producto = self.eliminar_patron(nombre_producto)
                 
         except Exception as ex:
-            print(nombre_producto)
             print(ex)
         
         return nombre_producto
@@ -117,17 +116,20 @@ class Pdf:
 
     # Si hay mas de dos productos en la guia, registro
     def get_nombre_producto_otros(self, lineas, id_telefono, cantidad_producto, fecha):
-        linea = lineas[4]
-        nombre_productoX = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
-        # Agregar productos cuando hay en la guia mas de dos ventas
-        if nombre_productoX:
-            self.procesar_productos(7, lineas, id_telefono, cantidad_producto, fecha)
-        # Agregar productos cuando hay en la guia mas de dos ventas
-        if nombre_productoX == None:
-            linea = lineas[5]
+        try:
+            linea = lineas[4]
             nombre_productoX = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
+            # Agregar productos cuando hay en la guia mas de dos ventas
             if nombre_productoX:
-                self.procesar_productos(8, lineas, id_telefono, cantidad_producto, fecha)
+                self.procesar_productos(7, lineas, id_telefono, cantidad_producto, fecha)
+            # Agregar productos cuando hay en la guia mas de dos ventas
+            if nombre_productoX == None:
+                linea = lineas[5]
+                nombre_productoX = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
+                if nombre_productoX:
+                    self.procesar_productos(8, lineas, id_telefono, cantidad_producto, fecha)
+        except Exception as ex:
+            print(ex)
     
     # Obtener la fecha de compra
     def get_fecha(self, text):
