@@ -3,14 +3,16 @@ import PyPDF2
 import re
 from Connector import Connect
 
-class Pdf:
-
+class PdfData:
     def __init__(self) -> None:
-        self.path = "D:\\General Files\\Documents\\Baysi\\Guias\\"
+        self.path = "D:\\General Files\\Projects\\DataLectorBaysi\\"
         # D:\General Files\Documents\Baysi\Guias
         self.patrones = [' - Unidad', ' - g', ' - mL', ' - Kg', ' - L']
         self.cn = Connect()
     
+    # Ejemplo de uso de la interfaz grafica usando un metodo de está clase 
+    def sumar(self):
+        return 5
     # Detector de patrones derecha
     def get_next_to_upper(self, text, pattern): 
         match = re.search(pattern, text)
@@ -38,11 +40,12 @@ class Pdf:
     def lectorPdfs(self):
         os.chdir(f'{self.path}\\upload')
         # Crea una lista de archivos PDF
-        archivos_pdf = [f for f in os.listdir(f'{self.path}\\upload') if f.endswith('.pdf')]
+        archivos_pdf = [f for f in os.listdir(f'{self.path}\\documents') if f.endswith('.pdf')]
 
         # Procesa cada archivo PDF
         for archivo_pdf in archivos_pdf:
             self.read_pdf(archivo_pdf)
+            os.remove(archivo_pdf)
         
     # Procesar el nombre del comprador 
     def procesar_nombre_comprador(self, linea):
@@ -125,7 +128,7 @@ class Pdf:
             # Agregar productos cuando hay en la guia mas de dos ventas
             if nombre_productoX == None:
                 linea = lineas[5]
-                nombre_productoX = self.get_next_to_upper(linea, r"([a-z])([A-Z])(.*)")
+                nombre_productoX = self.get_next_to_upper(linea, r"([a-z])([A-Z])w(.*)")
                 if nombre_productoX:
                     self.procesar_productos(8, lineas, id_telefono, cantidad_producto, fecha)
         except Exception as ex:
@@ -204,6 +207,6 @@ class Pdf:
 
 # Main
 if __name__ == "__main__":
-    pdf = Pdf()
+    pdf = PdfData()
     pdf.lectorPdfs()
     
