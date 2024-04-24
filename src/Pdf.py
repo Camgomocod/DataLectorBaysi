@@ -7,7 +7,7 @@ class PdfData:
     def __init__(self) -> None:
         self.path = "D:\\General Files\\Projects\\DataLectorBaysi\\"
         # D:\General Files\Documents\Baysi\Guias
-        self.patrones = [' - Unidad', ' - g', ' - mL', ' - Kg', ' - L']
+        self.patrones = [' z- Unidad', ' - g', ' - mL', ' - Kg', ' - L']
         self.cn = Connect()
     
     # Ejemplo de uso de la interfaz grafica usando un metodo de está clase 
@@ -38,7 +38,7 @@ class PdfData:
         
     # Iterador pdfs carpeta
     def lectorPdfs(self):
-        os.chdir(f'{self.path}\\upload')
+        os.chdir(f'{self.path}\\documents')
         # Crea una lista de archivos PDF
         archivos_pdf = [f for f in os.listdir(f'{self.path}\\documents') if f.endswith('.pdf')]
 
@@ -205,8 +205,5 @@ class PdfData:
         # Si hay mas de dos ventas en la guia se actualiza
         self.get_nombre_producto_otros(lineas, telefono, cantidad, fecha)
 
-# Main
-if __name__ == "__main__":
-    pdf = PdfData()
-    pdf.lectorPdfs()
+
     
