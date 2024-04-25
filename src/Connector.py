@@ -66,6 +66,32 @@ class Connect:
         
         except Exception as ex:
             print(ex)
+
+    def get_id_date(self, id_date):
+        try:
+            connection = psycopg2.connect(
+                host = 'localhost',
+                user = 'postgres',
+                password = 'database',
+                database = 'BaysiDataBase'
+            )
+        except Exception as ex:
+            print(ex)
+        
+        try:
+            cursor = connection.cursor()
+            cursor.execute(
+                    f"SELECT COUNT(*) FROM charge_date WHERE id_fecha == {id_date}"
+                )
+            resultado = cursor.fetchone()[0]
+            connection.commit()
+        
+        except Exception as ex:
+            print(ex)
+            connection.close()
+        
+        if resultado: 
+            return True
     
     
     

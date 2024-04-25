@@ -5,6 +5,9 @@ from Pdf import PdfData
 from tkcalendar import *
 import os 
 import shutil
+import re
+import datetime
+import hashlib
 
 class interface:
   def __init__(self) -> None:
@@ -41,6 +44,22 @@ class interface:
     pdfData = PdfData()
     pdfData.lectorPdfs()
 
+  def generate_unique_id(self, folder_name):
+    date_match = re.search(r"(\d{2})-(\d{2})-(\d{4})", folder_name)
+
+    if date_match:
+      day = date_match.group(1)
+      month = date_match.group(2)
+      year = date_match.group(3)
+
+      date_obj = datetime.datetime(int(year), int(month), int(day))
+      print(date_obj)
+      unique_id = hashlib.sha1(date_obj.strftime("%Y%m%d").encode("utf-8")).hexdigest()
+      
+      return unique_id
+    else:
+      raise ValueError("Invalid folder name: " + folder_name)
+
   def copy_pdfs(self):
     folder_path = "D:\\General Files\\Projects\\DataLectorBaysi\\documents"
     if origin_path:
@@ -69,4 +88,6 @@ if __name__ == "__main__":
   interfaceG.window.mainloop()
   folder_name = interfaceG.origin_folder.get()
   print(f"El nombre de la carpeta es {folder_name}")
+  id = interfaceG.generate_unique_id(folder_name)
+  print(id)
   
