@@ -1,3 +1,4 @@
 psycopg2==2.9.9
 PyPDF2==3.0.1
-tkCalendar
+tkCalendar==1.6.1
+Babel==2.14.0
