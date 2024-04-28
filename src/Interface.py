@@ -56,8 +56,6 @@ class interface:
     self.label_warning = tk.Label(self.label_frame, text=self.warning, bg="#2FAC73")
     self.label_warning.grid(row=0, column=2, padx=10, pady=10)
 
-
-
   def charge_pdf(self): 
 
     if self.button_charge_pdf["state"] == 'normal':
@@ -96,7 +94,6 @@ class interface:
 
     self.state_folder_charge()
 
-    
   def state_folder_charge(self):
     if self.cn.get_id_date(self, self.id_date):
       self.button_charge_pdf.config(state=DISABLED)
