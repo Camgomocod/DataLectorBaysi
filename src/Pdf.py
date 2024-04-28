@@ -38,9 +38,12 @@ class PdfData:
         
     # Iterador pdfs carpeta
     def lectorPdfs(self):
-        os.chdir(f'{self.path}\\documents')
+
+        
+        path = "D:\\General Files\\Projects\\DataLectorBaysi\\"
+        os.chdir(f'{path}\\documents')
         # Crea una lista de archivos PDF
-        archivos_pdf = [f for f in os.listdir(f'{self.path}\\documents') if f.endswith('.pdf')]
+        archivos_pdf = [f for f in os.listdir(f'{path}\\documents') if f.endswith('.pdf')]
 
         # Procesa cada archivo PDF
         for archivo_pdf in archivos_pdf:

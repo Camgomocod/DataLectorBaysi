@@ -67,7 +67,7 @@ class Connect:
         except Exception as ex:
             print(ex)
 
-    def get_id_date(self, id_date):
+    def get_id_date(self, id_fecha):
         try:
             connection = psycopg2.connect(
                 host = 'localhost',
@@ -81,17 +81,66 @@ class Connect:
         try:
             cursor = connection.cursor()
             cursor.execute(
-                    f"SELECT COUNT(*) FROM charge_date WHERE id_fecha == {id_date}"
+                    f"SELECT COUNT(*) FROM charge_date WHERE id_fecha = {id_fecha}"
                 )
             resultado = cursor.fetchone()[0]
             connection.commit()
         
         except Exception as ex:
             print(ex)
-            connection.close()
         
         if resultado: 
-            return True
+            return True 
+        else: 
+            return False 
+    
+    def insert_date(self, id_date, date):
+        try:
+            connection = psycopg2.connect(
+                host = 'localhost',
+                user = 'postgres',
+                password = 'database',
+                database = 'BaysiDataBase'
+            )
+        except Exception as ex:
+            print(ex)
+        
+        try:
+            cursor = connection.cursor()
+            cursor.execute(
+                    f"INSERT INTO charge_date (id_fecha, fecha) VALUES ({id_date}, '{date}')"
+                )
+            connection.commit()
+        
+        except Exception as ex:
+            print(ex)
+            connection.close()
+
+    def get_date():
+        try:
+            connection = psycopg2.connect(
+                host = 'localhost',
+                user = 'postgres',
+                password = 'database',
+                database = 'BaysiDataBase'
+            )
+        except Exception as ex:
+            print(ex)
+        
+        try:
+            cursor = connection.cursor()
+            cursor.execute(
+                    "SELECT fecha FROM charge_date ORDER BY fecha DESC LIMIT 1;"
+                )
+            
+            result = cursor.fetchone()[0]
+            connection.commit()
+        
+        except Exception as ex:
+            print(ex)
+            connection.close()
+        
+        return result
     
     
     
